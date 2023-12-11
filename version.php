@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_assist';
-$plugin->release = '2023092300';
-$plugin->version = 2023092300;
+$plugin->release = '2023120600';
+$plugin->version = 2023120600;
 $plugin->requires = 2023042400.00;
 $plugin->maturity = MATURITY_ALPHA;
