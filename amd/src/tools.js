@@ -21,9 +21,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import $ from 'jquery';
-//import Popper from 'core/popper';
-//import Templates from 'core/templates';
+import $ from 'jquery'; // Jquery is required for Bootstrap 4 poppers.
+// import Templates from 'core/templates';
+
+let startX = 0; // Global variable to store the start X position of the mouse.
 
 /**
  * Display the mini toolbar. With the selected text.
@@ -32,18 +33,23 @@ import $ from 'jquery';
  */
 const handleSelection = async(event) => {
     const selectedText = window.getSelection().toString().trim();
+    const endX = event.clientX; // X position at the end of selection.
     window.console.log(selectedText);
 
     if (selectedText.length > 0) {
         // Remove existing toolbar if any.
         $('#text-selection-popover').popover('hide').remove();
 
-        // Create the popover using vanilla JavaScript
+        // Calculate the position of the popover.
+        const x = startX < endX ? endX : startX; // Use the smaller X position.
+        const y = event.clientY;
+
+        // Create the popover using vanilla JavaScript.
         const popover = document.createElement('div');
         popover.id = 'text-selection-popover';
         popover.style.position = 'absolute';
-        popover.style.top = `${event.clientY}px`;
-        popover.style.left = `${event.clientX}px`;
+        popover.style.top = `${y}px`;
+        popover.style.left = `${x}px`;
         document.body.appendChild(popover);
 
         // Initialize the popover using Bootstrap (which still uses jQuery).
@@ -52,7 +58,8 @@ const handleSelection = async(event) => {
             content: 'Your popover content here',
             title: 'Popover Title',
             html: true,
-            trigger: 'manual'
+            trigger: 'manual',
+            offset: '15, 0' // Adjusts the popover position.
         });
 
         $(popover).popover('show');
@@ -97,4 +104,9 @@ export const init = () => {
 
     // Add listener to  main document.
     document.addEventListener('mouseup', handleSelection);
+
+    // Track the start of text selection.
+    document.addEventListener('mousedown', (event) => {
+        startX = event.clientX; // Update startX on mousedown.
+    });
 };
