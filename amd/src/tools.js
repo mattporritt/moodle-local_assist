@@ -22,7 +22,8 @@
  */
 
 import $ from 'jquery'; // Jquery is required for Bootstrap 4 poppers.
-// import Templates from 'core/templates';
+import Templates from 'core/templates';
+import * as coreStr from 'core/str';
 
 let startX = 0; // Global variable to store the start X position of the mouse.
 
@@ -40,6 +41,12 @@ const handleSelection = async(event) => {
         // Remove existing toolbar if any.
         $('#text-selection-popover').popover('hide').remove();
 
+        // Get popover content.
+        const popperContent = await Templates.render('local_assist/popover', {});
+
+        // Get popover title.
+        const popoverTitle = await coreStr.get_string('popover_title', 'local_assist');
+
         // Calculate the position of the popover.
         const x = startX < endX ? endX : startX; // Use the smaller X position.
         const y = event.clientY;
@@ -55,8 +62,8 @@ const handleSelection = async(event) => {
         // Initialize the popover using Bootstrap (which still uses jQuery).
         $(popover).popover({
             placement: 'right',
-            content: 'Your popover content here',
-            title: 'Popover Title',
+            content: popperContent,
+            title: popoverTitle,
             html: true,
             trigger: 'manual',
             offset: '15, 0' // Adjusts the popover position.
