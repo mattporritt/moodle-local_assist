@@ -26,6 +26,23 @@ import Templates from 'core/templates';
 import * as coreStr from 'core/str';
 
 let startX = 0; // Global variable to store the start X position of the mouse.
+let isPopoverInteraction = false; // Flag to track interaction with the popover
+
+/**
+ * Check if the popover contains the target element.
+ *
+ * @param {HTMLElement} target The target element.
+ * @returns {boolean} True if the popover contains the target element.
+ */
+const popoverContains = (target) => {
+    const popoverParent = document.getElementById('text-selection-popover');
+    if (popoverParent && popoverParent.nextElementSibling) {
+        const popoverElem = popoverParent.nextElementSibling;
+        return popoverElem && popoverElem.contains(target);
+    } else {
+        return false;
+    }
+};
 
 /**
  * Create the popover and load its content.
@@ -72,27 +89,29 @@ const createPopover = async(event) => {
  * @param {Event} event The mouseup event.
  */
 const handleSelection = async(event) => {
-    const selectedText = window.getSelection().toString().trim();
+    if (!isPopoverInteraction) {
+        const selectedText = window.getSelection().toString().trim();
+        if (selectedText.length > 0) {
+            // Remove existing popover if any.
+            $('#text-selection-popover').popover('hide').remove();
 
-    if (selectedText.length > 0) {
-        // Remove existing popover if any.
-        $('#text-selection-popover').popover('hide').remove();
+            // Create and show the popover.
+            const popoverObj = await createPopover(event);
+            $(popoverObj).popover('show');
 
-        // Create and show the popover.
-        const popoverObj = await createPopover(event);
-        $(popoverObj).popover('show');
-
-        // Add event listeners to the popover.
-        document.querySelectorAll('.tool-assist-options a').forEach((link) => {
-            link.addEventListener('click', (event) => {
-                event.preventDefault(); // Prevents the default link behavior
-                window.console.log('Link clicked:', link.id); // Logs the ID of the clicked link
-                // You can add more code here to handle the click event
+            // Add event listeners to the popover.
+            document.querySelectorAll('.tool-assist-options a').forEach((link) => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault(); // Prevents the default link behavior.
+                    isPopoverInteraction = true; // Set the flag when a link is clicked
+                    window.console.log('Link clicked:', link.id); // Logs the ID of the clicked link.
+                    // You can add more code here to handle the click event
+                });
             });
-        });
 
-    } else {
-        $('#text-selection-popover').popover('hide').remove();
+        } else {
+            $('#text-selection-popover').popover('hide').remove();
+        }
     }
 };
 
@@ -116,8 +135,6 @@ const addListenerToIframe = (iframe) => {
 };
 
 export const init = () => {
-    window.console.log('loaded');
-
     // Add listener to  Shadow DOM.
     const shadowElements = document.querySelectorAll('*');
     shadowElements.forEach(el => {
@@ -135,6 +152,18 @@ export const init = () => {
 
     // Track the start of text selection.
     document.addEventListener('mousedown', (event) => {
-        startX = event.clientX; // Update startX on mousedown.
+        if (popoverContains(event.target)) {
+            isPopoverInteraction = true;
+        } else {
+            startX = event.pageX; // Update startX only if not interacting with popover
+            isPopoverInteraction = false;
+        }
+    });
+
+    // Reset isPopoverInteraction when clicking outside the popover
+    document.addEventListener('click', (event) => {
+        if (!popoverContains(event.target)) {
+            isPopoverInteraction = false;
+        }
     });
 };
