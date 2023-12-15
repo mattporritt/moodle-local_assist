@@ -120,10 +120,40 @@ export const addPopoverListeners = (clickHandler) => {
 };
 
 /**
- * Hide and remove existing popover.
+ * Remove existing popover and its parent element.
  *
  * @param {string} parentId The ID of the element used as the parent of the popover.
  */
 export const removePopover = (parentId) => {
     $('#' + parentId).popover('hide').remove();
+};
+
+/**
+ * Hide existing popover.
+ *
+ * @param {string} parentId The ID of the element used as the parent of the popover.
+ */
+export const hidePopover = (parentId) => {
+    $('#' + parentId).popover('hide');
+};
+
+/**
+ * Show existing popover.
+ *
+ * @param {string} parentId The ID of the element used as the parent of the popover.
+ */
+export const showPopover = (parentId) => {
+    $('#' + parentId).popover('show');
+};
+
+/**
+ * Checks if the popover is visible.
+ *
+ * @param {string} parentId The ID of the element used as the parent of the popover.
+ * @returns {boolean} True if the popover is visible.
+ */
+export const isPopoverVisible = (parentId) => {
+    // Check if the popover element exists and is visible
+    const popover = $('#' + parentId).data('bs.popover');
+    return popover ? $(popover.getTipElement()).is(':visible') : false;
 };

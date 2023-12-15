@@ -24,8 +24,13 @@
 import * as Popover from 'local_assist/popover';
 import $ from 'jquery'; // Jquery is required for Bootstrap 4 poppers.
 import AssistModal from 'local_assist/modal';
-// import ModalEvents from 'core/modal_events';
+import ModalEvents from 'core/modal_events';
 
+/**
+ * The parent id for the popover, used to identify the popover.
+ * @type {string}
+ */
+const parentId = 'text-selection-popover';
 
 /**
  * Display the modal when AI assistance is selected.
@@ -36,30 +41,31 @@ export const displayModal = async() => {
         large: true,
     });
 
-    //const modalroot = await modalObject.getRoot();
-    //const root = modalroot[0];
+    const modalroot = await modalObject.getRoot();
+    const root = modalroot[0];
 
     await modalObject.show();
-    // modalroot.on(ModalEvents.hidden, () => {
-    //     modalObject.destroy();
-    // });
+    Popover.hidePopover(parentId);
+
+    modalroot.on(ModalEvents.hidden, () => {
+        window.console.log('Modal closed');
+        Popover.showPopover(parentId);
+        Popover.addPopoverListeners(handlePopoverClick);
+        // Popover.setIsPopoverInteraction(true);
+        modalObject.destroy();
+    });
 
     // Add the event listener for the button click events.
-    // root.addEventListener('click', (e) => {
-    //     const submitBtn = e.target.closest('[data-action="generate"]');
-    //     const insertBtn = e.target.closest('[data-action="inserter"]');
-    //     const cancelBtn = e.target.closest('[data-action="cancel"]');
-    //     if (submitBtn) {
-    //         e.preventDefault();
-    //         // handleSubmit(editor, root, submitBtn);
-    //     } else if (insertBtn) {
-    //         e.preventDefault();
-    //         // handleInsert(editor, root);
-    //         modalObject.destroy();
-    //     } else if (cancelBtn) {
-    //         modalObject.destroy();
-    //     }
-    // });
+    root.addEventListener('click', (e) => {
+        const submitBtn = e.target.closest('[data-action="generate"]');
+        const insertBtn = e.target.closest('[data-action="inserter"]');
+        if (submitBtn) {
+            e.preventDefault();
+        } else if (insertBtn) {
+            e.preventDefault();
+            modalObject.destroy();
+        }
+    });
 };
 
 
@@ -86,8 +92,8 @@ const handlePopoverClick = (event, linkId) => {
 const handleSelection = async(event) => {
     if (!Popover.getIsPopoverInteraction()) {
         const selectedText = window.getSelection().toString().trim();
-        const parentId = 'text-selection-popover';
-        if (selectedText.length > 0) {
+        window.console.log('selectedText', selectedText);
+        if (selectedText.length > 0 || Popover.isPopoverVisible(parentId)) {
             Popover.removePopover(parentId);
 
             const popoverObj = await Popover.createPopover(event, parentId);
