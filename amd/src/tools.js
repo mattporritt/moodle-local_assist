@@ -21,96 +21,27 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+import * as Popover from 'local_assist/popover';
 import $ from 'jquery'; // Jquery is required for Bootstrap 4 poppers.
-import Templates from 'core/templates';
-import * as coreStr from 'core/str';
-
-let startX = 0; // Global variable to store the start X position of the mouse.
-let isPopoverInteraction = false; // Flag to track interaction with the popover
 
 /**
- * Check if the popover contains the target element.
- *
- * @param {HTMLElement} target The target element.
- * @returns {boolean} True if the popover contains the target element.
- */
-const popoverContains = (target) => {
-    const popoverParent = document.getElementById('text-selection-popover');
-    if (popoverParent && popoverParent.nextElementSibling) {
-        const popoverElem = popoverParent.nextElementSibling;
-        return popoverElem && popoverElem.contains(target);
-    } else {
-        return false;
-    }
-};
-
-/**
- * Create the popover and load its content.
- *
- * @param {Event} event The mouseup event.
- * @returns {Promise<HTMLElement>} A promise that resolves with the popover element.
- */
-const createPopover = async(event) => {
-    // Get popover content.
-    const popperContent = await Templates.render('local_assist/popover', {});
-
-    // Get popover title.
-    const popoverTitle = await coreStr.get_string('popover_title', 'local_assist');
-
-    // Calculate the position of the popover.
-    const endX = event.clientX; // X position at the end of selection.
-    const x = startX < endX ? endX : startX; // Use the smaller X position.
-    const y = event.clientY;
-
-    // Create the popover using vanilla JavaScript.
-    const popover = document.createElement('div');
-    popover.id = 'text-selection-popover';
-    popover.style.position = 'absolute';
-    popover.style.top = `${y}px`;
-    popover.style.left = `${x}px`;
-    document.body.appendChild(popover);
-
-    // Initialize the popover using Bootstrap (which still uses jQuery).
-    $(popover).popover({
-        placement: 'right',
-        content: popperContent,
-        title: popoverTitle,
-        html: true,
-        trigger: 'manual',
-        offset: '15, 0' // Adjusts the popover position.
-    });
-
-    return popover;
-};
-
-/**
- * Display the mini toolbar. With the selected text.
+ * Display the popover, with the selected text.
  *
  * @param {Event} event The mouseup event.
  */
 const handleSelection = async(event) => {
-    if (!isPopoverInteraction) {
+    if (!Popover.getIsPopoverInteraction()) {
         const selectedText = window.getSelection().toString().trim();
+        const parentId = 'text-selection-popover';
         if (selectedText.length > 0) {
-            // Remove existing popover if any.
-            $('#text-selection-popover').popover('hide').remove();
+            Popover.removePopover(parentId);
 
-            // Create and show the popover.
-            const popoverObj = await createPopover(event);
+            const popoverObj = await Popover.createPopover(event, parentId);
             $(popoverObj).popover('show');
 
-            // Add event listeners to the popover.
-            document.querySelectorAll('.tool-assist-options a').forEach((link) => {
-                link.addEventListener('click', (event) => {
-                    event.preventDefault(); // Prevents the default link behavior.
-                    isPopoverInteraction = true; // Set the flag when a link is clicked
-                    window.console.log('Link clicked:', link.id); // Logs the ID of the clicked link.
-                    // You can add more code here to handle the click event
-                });
-            });
-
+            Popover.addPopoverListeners();
         } else {
-            $('#text-selection-popover').popover('hide').remove();
+            Popover.removePopover(parentId);
         }
     }
 };
@@ -120,7 +51,7 @@ const handleSelection = async(event) => {
  *
  * @param {HTMLElement} root The root element of the Shadow DOM.
  */
-const addListenerToShadowDOM = (root)=> {
+const addListenerToShadowDOM = (root) => {
     root.addEventListener('mouseup', handleSelection);
 };
 
@@ -152,18 +83,18 @@ export const init = () => {
 
     // Track the start of text selection.
     document.addEventListener('mousedown', (event) => {
-        if (popoverContains(event.target)) {
-            isPopoverInteraction = true;
+        if (Popover.popoverContains(event.target)) {
+            Popover.setIsPopoverInteraction(true);
         } else {
-            startX = event.pageX; // Update startX only if not interacting with popover
-            isPopoverInteraction = false;
+            Popover.setStartX(event.pageX);
+            Popover.setIsPopoverInteraction(false);
         }
     });
 
     // Reset isPopoverInteraction when clicking outside the popover
     document.addEventListener('click', (event) => {
-        if (!popoverContains(event.target)) {
-            isPopoverInteraction = false;
+        if (!Popover.popoverContains(event.target)) {
+            Popover.setIsPopoverInteraction(false);
         }
     });
 };
