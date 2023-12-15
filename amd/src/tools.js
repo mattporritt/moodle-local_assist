@@ -23,6 +23,45 @@
 
 import * as Popover from 'local_assist/popover';
 import $ from 'jquery'; // Jquery is required for Bootstrap 4 poppers.
+import AssistModal from 'local_assist/modal';
+// import ModalEvents from 'core/modal_events';
+
+
+/**
+ * Display the modal when AI assistance is selected.
+ *
+ */
+export const displayModal = async() => {
+    const modalObject = await AssistModal.create({
+        large: true,
+    });
+
+    //const modalroot = await modalObject.getRoot();
+    //const root = modalroot[0];
+
+    await modalObject.show();
+    // modalroot.on(ModalEvents.hidden, () => {
+    //     modalObject.destroy();
+    // });
+
+    // Add the event listener for the button click events.
+    // root.addEventListener('click', (e) => {
+    //     const submitBtn = e.target.closest('[data-action="generate"]');
+    //     const insertBtn = e.target.closest('[data-action="inserter"]');
+    //     const cancelBtn = e.target.closest('[data-action="cancel"]');
+    //     if (submitBtn) {
+    //         e.preventDefault();
+    //         // handleSubmit(editor, root, submitBtn);
+    //     } else if (insertBtn) {
+    //         e.preventDefault();
+    //         // handleInsert(editor, root);
+    //         modalObject.destroy();
+    //     } else if (cancelBtn) {
+    //         modalObject.destroy();
+    //     }
+    // });
+};
+
 
 /**
  * Handle the popover link click.
@@ -36,6 +75,7 @@ const handlePopoverClick = (event, linkId) => {
     Popover.setIsPopoverInteraction(true);
     window.console.log('Link clicked:', linkId);
     // Add additional processing here if needed
+    displayModal();
 };
 
 /**
