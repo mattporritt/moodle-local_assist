@@ -25,6 +25,20 @@ import * as Popover from 'local_assist/popover';
 import $ from 'jquery'; // Jquery is required for Bootstrap 4 poppers.
 
 /**
+ * Handle the popover link click.
+ * Receives the click event and the link id from the popover.
+ *
+ * @param {Event} event The click event.
+ * @param {string} linkId The link id.
+ */
+const handlePopoverClick = (event, linkId) => {
+    event.preventDefault();
+    Popover.setIsPopoverInteraction(true);
+    window.console.log('Link clicked:', linkId);
+    // Add additional processing here if needed
+};
+
+/**
  * Display the popover, with the selected text.
  *
  * @param {Event} event The mouseup event.
@@ -39,7 +53,7 @@ const handleSelection = async(event) => {
             const popoverObj = await Popover.createPopover(event, parentId);
             $(popoverObj).popover('show');
 
-            Popover.addPopoverListeners();
+            Popover.addPopoverListeners(handlePopoverClick);
         } else {
             Popover.removePopover(parentId);
         }

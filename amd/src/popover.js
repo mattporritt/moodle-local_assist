@@ -108,13 +108,13 @@ export const createPopover = async(event, parentId) => {
 
 /**
  * Add event listeners to the popover.
+ *
+ * @param {function} clickHandler The function to call when a link is clicked.
  */
-export const addPopoverListeners = () => {
+export const addPopoverListeners = (clickHandler) => {
     document.querySelectorAll('.tool-assist-options a').forEach((link) => {
         link.addEventListener('click', (event) => {
-            event.preventDefault();
-            isPopoverInteraction = true;
-            window.console.log('Link clicked:', link.id);
+            clickHandler(event, link.id); // Use the callback function
         });
     });
 };
