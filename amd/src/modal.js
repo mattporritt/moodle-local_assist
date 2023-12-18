@@ -22,8 +22,12 @@
  */
 
 import Modal from 'core/modal';
+import ModalEvents from 'core/modal_events';
 
-export default class AssistModal extends Modal {
+/**
+ * Class for custom AI assist modal type.
+ */
+class AssistModal extends Modal {
     static TYPE = 'local_assist/modal';
     static TEMPLATE = 'local_assist/modal';
 
@@ -36,3 +40,54 @@ export default class AssistModal extends Modal {
         this.registerCloseOnCancel();
     }
 }
+
+
+/**
+ * Display the modal when AI assistance is selected.
+ *
+ * @param {function} hiddenActions The callback to pass to the hidden event.
+ */
+export const displayModal = async(hiddenActions) => {
+    const modalObject = await AssistModal.create({
+        large: true,
+    });
+    const modalroot = await modalObject.getRoot();
+    const root = modalroot[0];
+    await modalObject.show();
+
+    modalroot.on(ModalEvents.hidden, () => {
+        // Execute call back actions.
+        hiddenActions();
+        // Destroy the modal.
+        modalObject.destroy();
+    });
+
+    // Add the event listener for the button click events.
+    root.addEventListener('click', (e) => {
+        const submitBtn = e.target.closest('[data-action="generate"]');
+        const insertBtn = e.target.closest('[data-action="inserter"]');
+        if (submitBtn) {
+            e.preventDefault();
+        } else if (insertBtn) {
+            e.preventDefault();
+            modalObject.destroy();
+        }
+    });
+};
+
+export const modalExists = () => {
+    const modal = document.getElementById('local_assist-modal');
+    return modal !== null;
+};
+
+export const isModalEvent = (event) => {
+    let element = event.target;
+    // Traverse up the DOM tree and check each parent element.
+    while (element) {
+        if (element.classList.contains('modal')) {
+            return true;
+        }
+        element = element.parentElement;
+    }
+    return false;
+};

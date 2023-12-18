@@ -23,7 +23,7 @@
 
 import * as Popover from 'local_assist/popover';
 import $ from 'jquery'; // Jquery is required for Bootstrap 4 poppers.
-import AssistModal from 'local_assist/modal';
+import * as AssistModal from 'local_assist/modal';
 import ModalEvents from 'core/modal_events';
 
 /**
@@ -43,55 +43,15 @@ let textRange = null;
  *
  */
 export const displayModal = async() => {
-    const modalObject = await AssistModal.create({
-        large: true,
-    });
-    const modalroot = await modalObject.getRoot();
-    const root = modalroot[0];
-    await modalObject.show();
-
-    modalroot.on(ModalEvents.hidden, () => {
+    await AssistModal.displayModal(() => {
         // Restore the saved text selection.
         restoreSelection();
 
         // Show the popover again.
         Popover.showPopover(parentId);
         Popover.addPopoverListeners(handlePopoverClick);
-
-        // Destroy the modal.
-        modalObject.destroy();
-    });
-
-    // Add the event listener for the button click events.
-    root.addEventListener('click', (e) => {
-        const submitBtn = e.target.closest('[data-action="generate"]');
-        const insertBtn = e.target.closest('[data-action="inserter"]');
-        if (submitBtn) {
-            e.preventDefault();
-        } else if (insertBtn) {
-            e.preventDefault();
-            modalObject.destroy();
-        }
     });
 };
-
-const modalExists = () => {
-    const modal = document.getElementById('local_assist-modal');
-    return modal !== null;
-};
-
-const isModalEvent = (event) => {
-    let element = event.target;
-    // Traverse up the DOM tree and check each parent element.
-    while (element) {
-        if (element.classList.contains('modal')) {
-            return true;
-        }
-        element = element.parentElement;
-    }
-    return false;
-};
-
 
 const setRange = (value) => {
     textRange = value;
@@ -140,13 +100,13 @@ const handleSelection = async(event) => {
 
     // Only update selected text if there is text actually selected, AND;
     // Either the Popover or the modal are not shown.
-    if (selectedText.length > 0 && (!Popover.isPopoverVisible(parentId) || !modalExists())) {
+    if (selectedText.length > 0 && (!Popover.isPopoverVisible(parentId) || !AssistModal.modalExists())) {
         // Update the saved text range, so we always have the most recent version of selected text.
         setRange(selection.getRangeAt(0).cloneRange());
     }
 
     // Check conditions and show the popover.
-    if (selectedText.length > 0 && !Popover.eventIsPopoverLink(event) && !isModalEvent(event)) {
+    if (selectedText.length > 0 && !Popover.eventIsPopoverLink(event) && !AssistModal.isModalEvent(event)) {
         // Create and show popover.
         const popoverObj = await Popover.createPopover(event, parentId);
         $(popoverObj).popover('show');
@@ -203,7 +163,7 @@ export const init = () => {
         // Clear the stored text and kill the modal if the modal is not visible and the click target is not the popover.
         const selection = window.getSelection();
         const selectedText = selection.toString().trim();
-        if (!modalExists() && !Popover.popoverContains(event.target) && selectedText.length === 0) {
+        if (!AssistModal.modalExists() && !Popover.popoverContains(event.target) && selectedText.length === 0) {
             setRange(null);
             Popover.removePopover(parentId); // Shouldn't happen, but just in case.
         }
