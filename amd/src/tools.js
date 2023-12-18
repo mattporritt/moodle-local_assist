@@ -46,21 +46,17 @@ export const displayModal = async() => {
     const modalObject = await AssistModal.create({
         large: true,
     });
-
     const modalroot = await modalObject.getRoot();
     const root = modalroot[0];
-
     await modalObject.show();
 
     modalroot.on(ModalEvents.hidden, () => {
-        window.console.log('Modal closed');
         // Restore the saved text selection.
         restoreSelection();
 
         // Show the popover again.
         Popover.showPopover(parentId);
         Popover.addPopoverListeners(handlePopoverClick);
-        Popover.setIsPopoverInteraction(true);
 
         // Destroy the modal.
         modalObject.destroy();
@@ -86,8 +82,7 @@ const modalExists = () => {
 
 const isModalEvent = (event) => {
     let element = event.target;
-
-    // Traverse up the DOM tree and check each parent element
+    // Traverse up the DOM tree and check each parent element.
     while (element) {
         if (element.classList.contains('modal')) {
             return true;
@@ -109,7 +104,6 @@ const setRange = (value) => {
 const restoreSelection = () => {
     const selection = window.getSelection();
     selection.removeAllRanges();
-    window.console.log('restoring range', textRange);
     selection.addRange(textRange);
 };
 
@@ -124,7 +118,7 @@ const restoreSelection = () => {
 const handlePopoverClick = (event, linkId) => {
     event.preventDefault();
     event.stopImmediatePropagation(); // Prevents the event from propagating up to the document level.
-    // Popover.setIsPopoverInteraction(true);
+
     window.console.log('Link clicked:', linkId);
     // Hide the popover.
     Popover.hidePopover(parentId);
@@ -140,32 +134,20 @@ const handlePopoverClick = (event, linkId) => {
  * @param {Event} event The mouseup event.
  */
 const handleSelection = async(event) => {
-    window.console.log('\n mouse up event called');
-    // window.console.log('Is popover interaction', Popover.getIsPopoverInteraction());
-    window.console.log('is popoover visible', Popover.isPopoverVisible(parentId));
-    window.console.log('current text range', textRange);
-    window.console.log('event is popover link', Popover.eventIsPopoverLink(event), event.target);
-    window.console.log('modal exists', modalExists());
-
     // First check if we have selected text.
     const selection = window.getSelection();
     const selectedText = selection.toString().trim();
-    window.console.log('Text has been selected: ', selectedText);
 
     // Only update selected text if there is text actually selected, AND;
     // Either the Popover or the modal are not shown.
     if (selectedText.length > 0 && (!Popover.isPopoverVisible(parentId) || !modalExists())) {
         // Update the saved text range, so we always have the most recent version of selected text.
-        window.console.log('Setting text range', selection);
         setRange(selection.getRangeAt(0).cloneRange());
     }
 
-    // Only show the popover if here is text actually selected OR saved, AND;
-    // Either the Popover or the modal are not shown.
-    if (selectedText.length > 0
-        && !Popover.eventIsPopoverLink(event) && !isModalEvent(event)) {
+    // Check conditions and show the popover.
+    if (selectedText.length > 0 && !Popover.eventIsPopoverLink(event) && !isModalEvent(event)) {
         // Create and show popover.
-        window.console.log('Creating popover');
         const popoverObj = await Popover.createPopover(event, parentId);
         $(popoverObj).popover('show');
         // Add event listeners to the popover links.
@@ -211,30 +193,17 @@ export const init = () => {
     // Track the start of text selection.
     document.addEventListener('mousedown', (event) => {
         if (Popover.popoverContains(event.target)) {
-            Popover.setIsPopoverInteraction(true);
         } else {
             Popover.setStartX(event.pageX);
-            Popover.setIsPopoverInteraction(false);
         }
     });
 
-    // Global click listener to manage popover hiding and stored swlection clearing.
+    // Global click listener to manage popover removing and stored selection clearing.
     document.addEventListener('click', (event) => {
-        window.console.log('\n Document click event called', event.target);
-        window.console.log('Popover contains target', Popover.popoverContains(event.target));
-        window.console.log('Modal exists', modalExists());
-
-        // Close the popover if the popover is visible and the click target is not the popover.
-        if (Popover.isPopoverVisible(parentId) && !Popover.popoverContains(event.target)) {
-            window.console.log('popover is visible AND event does not contain Popover');
-            //Popover.hidePopover(parentId);
-        }
-
-        // Clear the stored text if the modal is not visible and the click target is not the popover
+        // Clear the stored text and kill the modal if the modal is not visible and the click target is not the popover.
         const selection = window.getSelection();
         const selectedText = selection.toString().trim();
         if (!modalExists() && !Popover.popoverContains(event.target) && selectedText.length === 0) {
-            window.console.log('modal does not exist AND event does not contain Popover AND there is no selected text');
             setRange(null);
             Popover.removePopover(parentId); // Shouldn't happen, but just in case.
         }

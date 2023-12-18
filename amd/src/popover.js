@@ -25,29 +25,8 @@ import $ from 'jquery'; // Jquery is required for Bootstrap 4 poppers.
 import Templates from 'core/templates';
 import * as coreStr from 'core/str';
 
-// Track if the popover is being interacted with.
-let isPopoverInteraction = false;
-
 // Track the X position of the mouse at the start of the text selection.
 let startX = 0;
-
-/**
- * Set the popover interaction state.
- *
- * @param {boolean} value The value to set.
- */
-export const setIsPopoverInteraction = (value) => {
-    isPopoverInteraction = value;
-};
-
-/**
- * Get the popover interaction state.
- *
- * @returns {boolean} The popover interaction state.
- */
-export const getIsPopoverInteraction = () => {
-    return isPopoverInteraction;
-};
 
 /**
  * Set the X position of the mouse at the start of the text selection.
