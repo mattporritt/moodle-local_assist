@@ -32,67 +32,67 @@
     }
 }}
 {{< core/modal }}
+        {{$title}}
+            {{#str}} buttontitle, local_assist {{/str}}
+        {{/title}}
 
-    {{$title}}
-        {{#str}} buttontitle, local_assist {{/str}}
-    {{/title}}
-
-    {{$body}}
-        <div id="local_assist_spinner" class="hidden">
-            <div class="tiny-ai-loading-spinner d-flex justify-content-center align-items-center flex-column">
-                <div class="spinner-border tiny-ai-spinner-style" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>
-                <div id="local_assist_loading_text" class="text-center tiny-ai-spinner-text-style">
-                    Loading...
+        {{$body}}
+            <div id='local_assist-modal'>
+            <div id="local_assist_spinner" class="hidden">
+                <div class="tiny-ai-loading-spinner d-flex justify-content-center align-items-center flex-column">
+                    <div class="spinner-border tiny-ai-spinner-style" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <div id="local_assist_loading_text" class="text-center tiny-ai-spinner-text-style">
+                        Loading...
+                    </div>
                 </div>
             </div>
-        </div>
-        <div id="local_assist_blur" class="">
-            <div id="local_assist_overlay" class="tiny-ai-overlay hidden"></div>
-            <form class="mform" id="{{uniqid}}">
-                <div class="form-group">
-                    <label for="local_assist_prompttext">
-                        {{#str}} prompttext_label, local_assist {{/str}}
-                    </label>
-                    <textarea
-                            class="form-control"
-                            id="local_assist_prompttext"
-                            rows="3"
-                            placeholder="{{#str}} prompttext_placeholder, local_assist {{/str}}"></textarea>
-                    <label for="local_assist_responsetext">
-                        {{#str}} responsetext_label, local_assist {{/str}}
-                    </label>
-                    <textarea
-                            class="form-control"
-                            id="local_assist_responsetext"
-                            rows="3"
-                            placeholder="{{#str}} responsetext_placeholder, local_assist {{/str}}"
-                            disabled="disabled"></textarea>
-                </div>
-            </form>
-        </div>
-    {{/body}}
+            <div id="local_assist_blur" class="">
+                <div id="local_assist_overlay" class="tiny-ai-overlay hidden"></div>
+                <form class="mform" id="{{uniqid}}">
+                    <div class="form-group">
+                        <label for="local_assist_prompttext">
+                            {{#str}} prompttext_label, local_assist {{/str}}
+                        </label>
+                        <textarea
+                                class="form-control"
+                                id="local_assist_prompttext"
+                                rows="3"
+                                placeholder="{{#str}} prompttext_placeholder, local_assist {{/str}}"></textarea>
+                        <label for="local_assist_responsetext">
+                            {{#str}} responsetext_label, local_assist {{/str}}
+                        </label>
+                        <textarea
+                                class="form-control"
+                                id="local_assist_responsetext"
+                                rows="3"
+                                placeholder="{{#str}} responsetext_placeholder, local_assist {{/str}}"
+                                disabled="disabled"></textarea>
+                    </div>
+                </form>
+            </div>
+            </div>
+        {{/body}}
 
-    {{$footer}}
-        <button type="button"
-                class="btn btn-secondary"
-                data-action="cancel">
-            {{#str}} cancel, moodle {{/str}}
-        </button>
-        <button id="local_assist_generatebutton"
-                type="button"
-                class="btn btn-primary"
-                data-action="generate"
-                disabled="disabled">
-            {{#str}} generate, local_assist{{/str}}
-        </button>
-        <button id="local_assist_insertbutton"
-                type="button"
-                class="btn btn-primary hidden"
-                data-action="inserter">
-            {{#str}} insert, local_assist{{/str}}
-        </button>
-    {{/footer}}
-
+        {{$footer}}
+            <button type="button"
+                    class="btn btn-secondary"
+                    data-action="cancel">
+                {{#str}} cancel, moodle {{/str}}
+            </button>
+            <button id="local_assist_generatebutton"
+                    type="button"
+                    class="btn btn-primary"
+                    data-action="generate"
+                    disabled="disabled">
+                {{#str}} generate, local_assist{{/str}}
+            </button>
+            <button id="local_assist_insertbutton"
+                    type="button"
+                    class="btn btn-primary hidden"
+                    data-action="inserter">
+                {{#str}} insert, local_assist{{/str}}
+            </button>
+        {{/footer}}
 {{/ core/modal }}

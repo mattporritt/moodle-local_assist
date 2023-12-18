@@ -119,6 +119,29 @@ export const addPopoverListeners = (clickHandler) => {
     });
 };
 
+export const eventIsPopoverLink = (event) => {
+    const validIds = [
+        "tool-assist-popover-summarise",
+        "tool-assist-popover-translate",
+        "tool-assist-popover-explain",
+        "tool-assist-popover-question"
+    ];
+    let targetElement = event.target;
+
+    // Traverse up to 3 levels up from the target element
+    for (let i = 0; i < 3; i++) {
+        if (validIds.includes(targetElement.id)) {
+            return true;
+        }
+        // Move up to the parent element
+        targetElement = targetElement.parentElement;
+        if (!targetElement) {
+            break;
+        }
+    }
+    return false;
+};
+
 /**
  * Remove existing popover and its parent element.
  *
