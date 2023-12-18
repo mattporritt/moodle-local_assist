@@ -24,7 +24,6 @@
 import * as Popover from 'local_assist/popover';
 import $ from 'jquery'; // Jquery is required for Bootstrap 4 poppers.
 import * as AssistModal from 'local_assist/modal';
-import ModalEvents from 'core/modal_events';
 
 /**
  * The parent id for the popover, used to identify the popover.
