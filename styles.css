@@ -1,0 +1,53 @@
+.local-assist-options {
+    font-size: 0.975rem;
+}
+
+.local-assist-options i {
+    font-size: 1.5rem;
+}
+
+.local-assist-options span {
+    line-height: 1.2rem;
+}
+
+.local-assist-options a:hover span {
+    text-decoration: underline;
+}
+
+
+.local-assist-overlay {
+    position: absolute;
+    background: rgba(255, 255, 255, .5);
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+
+.local-assist-blur {
+    filter: blur(4px);
+}
+
+.local-assist-loading-spinner {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.local-assist-spinner-style {
+    width: 3rem !important;
+    height: 3rem !important;
+    color: #0f6cbf;
+    z-index: 1000;
+}
+
+.local-assist-spinner-text-style {
+    font-size: 1.5rem;
+    font-weight: bold;
+    z-index: 1000;
+}

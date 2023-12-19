@@ -49,28 +49,10 @@
                 </div>
             </div>
             <div id="local_assist_blur" class="">
-                <div id="local_assist_overlay" class="tiny-ai-overlay hidden"></div>
-                <form class="mform" id="{{uniqid}}">
-                    <div class="form-group">
-                        <label for="local_assist_prompttext">
-                            {{#str}} prompttext_label, local_assist {{/str}}
-                        </label>
-                        <textarea
-                                class="form-control"
-                                id="local_assist_prompttext"
-                                rows="3"
-                                placeholder="{{#str}} prompttext_placeholder, local_assist {{/str}}"></textarea>
-                        <label for="local_assist_responsetext">
-                            {{#str}} responsetext_label, local_assist {{/str}}
-                        </label>
-                        <textarea
-                                class="form-control"
-                                id="local_assist_responsetext"
-                                rows="3"
-                                placeholder="{{#str}} responsetext_placeholder, local_assist {{/str}}"
-                                disabled="disabled"></textarea>
-                    </div>
-                </form>
+                <div id="local_assist_overlay" class="local-assist-overlay hidden"></div>
+                <div id="local_assist_response_content">
+                    <!-- Modal content to be populated based on chosen AI action-->
+                </div>
             </div>
             </div>
         {{/body}}
