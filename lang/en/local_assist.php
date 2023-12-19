@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'Learner Assist';
-$string['ai:use'] = 'Generate AI content using Tiny AI';
+$string['assist:use'] = 'Use AI content generator';
 $string['apikey'] = 'OpenAI API key';
 $string['apikey_desc'] = 'Enter your OpenAI API key. You can get one from https://platform.openai.com/account/api-keys';
 $string['buttontitle'] = 'Add AI content';

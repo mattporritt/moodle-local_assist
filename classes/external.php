@@ -66,21 +66,21 @@ class external extends external_api {
      *
      * @since  Moodle 4.4
      * @param int $contextid The context ID.
-     * @param string $prompttext The data encoded as a json array.
+     * @param string $selectedtext The data encoded as a json array.
      * @param string $action The action for the AI to perform on the supplied text.
      *
      * @return array The generated content.
      */
-    public static function ai_generate(int $contextid, string $prompttext, string $action): array {
+    public static function ai_generate(int $contextid, string $selectedtext, string $action): array {
         \core\session\manager::write_close(); // Close session early this is a read op.
         // Parameter validation.
         [
             'contextid' => $contextid,
-            'prompttext' => $prompttext,
+            'selectedtext' => $selectedtext,
             'action' => $action,
         ] = self::validate_parameters(self::ai_generate_parameters(), [
             'contextid' => $contextid,
-            'prompttext' => $prompttext,
+            'selectedtext' => $selectedtext,
             'action' => $action,
         ]);
         // Context validation and permission check.

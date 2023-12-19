@@ -24,6 +24,7 @@
 import * as Popover from 'local_assist/popover';
 import $ from 'jquery'; // Jquery is required for Bootstrap 4 poppers.
 import * as AssistModal from 'local_assist/modal';
+import Ajax from 'core/ajax';
 
 /**
  *  The context id for the current page.
@@ -44,10 +45,51 @@ const parentId = 'text-selection-popover';
 let textRange = null;
 
 /**
+ * The action ids for the popover links.
+ * @type {object}
+ */
+const actionIds = {
+    "local-assist-popover-summarise": 'summarise',
+    "local-assist-popover-translate": 'translate',
+    "local-assist-popover-explain": 'explain',
+    "local-assist-popover-question": 'question',
+};
+
+/**
+ * Process the request to the AI service.
+ * Will pass the selected text to the AI service and return the response.
+ *
+ * @param {string} linkId The ID of the clicked action link.
+ * @returns {Promise<void>}
+ */
+const processRequest = async(linkId) => {
+    // Pass the prompt text to the webservice using Ajax.
+    window.console.log(textRange.toString());
+    const request = {
+        methodname: 'local_assist_ai_generate',
+        args: {
+            contextid: contextId,
+            selectedtext: textRange.toString(),
+            action: actionIds[linkId],
+        }
+    };
+
+    // Try making the ajax call and catch any errors.
+    try {
+        const responseObj = await Ajax.call([request])[0];
+        window.console.log(responseObj);
+    } catch (error) {
+        window.console.log(error);
+        // TODO: Display error message in modal.
+    }
+};
+
+/**
  * Display the modal when AI assistance is selected.
  *
+ * @param {string} linkId The ID of the clicked action link.
  */
-const displayModal = async() => {
+const displayModal = async(linkId) => {
     // Create and display the modal.
     await AssistModal.displayModal(() => {
         // Restore the saved text selection.
@@ -57,6 +99,9 @@ const displayModal = async() => {
         Popover.showPopover(parentId);
         Popover.addPopoverListeners(handlePopoverClick);
     }, true);
+
+    // Call the AI service.
+    await processRequest(linkId);
 };
 
 const setRange = (value) => {
@@ -90,7 +135,7 @@ const handlePopoverClick = (event, linkId) => {
     Popover.hidePopover(parentId);
 
     // Display the modal.
-    displayModal();
+    displayModal(linkId);
 };
 
 /**
