@@ -63,4 +63,3 @@ export const loadingMessages = async(element, delay = 6000) => {
         displayMessages();
     });
 };
-

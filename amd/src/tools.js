@@ -47,7 +47,8 @@ let textRange = null;
  * Display the modal when AI assistance is selected.
  *
  */
-export const displayModal = async() => {
+const displayModal = async() => {
+    // Create and display the modal.
     await AssistModal.displayModal(() => {
         // Restore the saved text selection.
         restoreSelection();
@@ -55,7 +56,7 @@ export const displayModal = async() => {
         // Show the popover again.
         Popover.showPopover(parentId);
         Popover.addPopoverListeners(handlePopoverClick);
-    });
+    }, true);
 };
 
 const setRange = (value) => {

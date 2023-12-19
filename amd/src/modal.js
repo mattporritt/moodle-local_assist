@@ -23,6 +23,7 @@
 
 import Modal from 'core/modal';
 import ModalEvents from 'core/modal_events';
+import {loadingMessages} from 'local_assist/loading';
 
 /**
  * Class for custom AI assist modal type.
@@ -45,19 +46,26 @@ class AssistModal extends Modal {
 /**
  * Display the modal when AI assistance is selected.
  *
- * @param {function} hiddenActions The callback to pass to the hidden event.
+ * @param {function} hiddenCallback The callback to pass to the hidden event.
+ * @param {boolean} showLoading Whether to show the loading spinner.
  */
-export const displayModal = async(hiddenActions) => {
+export const displayModal = async(hiddenCallback, showLoading) => {
     const modalObject = await AssistModal.create({
         large: true,
+        templateContext: {classes: 'local-assist-modal-dimensions'}
     });
     const modalroot = await modalObject.getRoot();
     const root = modalroot[0];
     await modalObject.show();
 
+    if (showLoading) {
+        // Display the loading spinner.
+        displayLoading(root);
+    }
+
     modalroot.on(ModalEvents.hidden, () => {
         // Execute call back actions.
-        hiddenActions();
+        hiddenCallback();
         // Destroy the modal.
         modalObject.destroy();
     });
@@ -90,4 +98,37 @@ export const isModalEvent = (event) => {
         element = element.parentElement;
     }
     return false;
+};
+
+/**
+ * Display the loading action in the modal.
+ *
+ * @param {Object} root The root element of the modal.
+ */
+const displayLoading = (root) => {
+    const loadingSpinnerDiv = root.querySelector('#local_assist_spinner');
+    const overlayDiv = root.querySelector('#local_assist_overlay');
+    const blurDiv = root.querySelector('#local_assist_blur');
+    const loadingTextDiv = root.querySelector('#local_assist_loading_text');
+
+    loadingMessages(loadingTextDiv);
+    loadingSpinnerDiv.classList.remove('hidden');
+    overlayDiv.classList.remove('hidden');
+    blurDiv.classList.add('local-assist-blur');
+};
+
+/**
+ * Hide the loading action in the modal.
+ *
+ * @param {Object} root The root element of the modal.
+ */
+export const hideLoading = (root) => {
+    const loadingSpinnerDiv = root.querySelector('#local_assist_spinner');
+    const overlayDiv = root.querySelector('#local_assist_overlay');
+    const blurDiv = root.querySelector('#local_assist_blur');
+
+    loadingSpinnerDiv.classList.add('hidden');
+    overlayDiv.classList.add('hidden');
+    blurDiv.classList.remove('local-assist-blur');
+
 };

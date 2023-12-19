@@ -51,3 +51,7 @@
     font-weight: bold;
     z-index: 1000;
 }
+
+.local-assist-modal-dimensions {
+    min-height: 80vh;
+}
