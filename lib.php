@@ -30,7 +30,8 @@
  */
 function local_assist_before_standard_html_head() {
     global $PAGE;
+    $context = $PAGE->context;
     // TODO: Add capability check here.
 
-    $PAGE->requires->js_call_amd('local_assist/tools', 'init', []);
+    $PAGE->requires->js_call_amd('local_assist/tools', 'init', [$context->id]);
 }

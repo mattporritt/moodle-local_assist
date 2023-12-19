@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - https://moodle.org/
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,20 +12,24 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Local assist webservice definitions.
  *
- * @package     local_assist
+ * @package    local_assist
  * @copyright   2023 Matt Porritt <matt.porritt@moodle.com>
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'local_assist';
-$plugin->release = '2023121900';
-$plugin->version = 2023121900;
-$plugin->requires = 2023042400.00;
-$plugin->maturity = MATURITY_ALPHA;
+$functions = [
+        'local_assist_ai_generate' => [
+                'classname'   => 'local_assist\external',
+                'methodname'  => 'ai_generate',
+                'description' => 'Generate AI content.',
+                'type'        => 'read',
+                'ajax'          => true,
+        ],
+];

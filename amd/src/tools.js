@@ -26,6 +26,12 @@ import $ from 'jquery'; // Jquery is required for Bootstrap 4 poppers.
 import * as AssistModal from 'local_assist/modal';
 
 /**
+ *  The context id for the current page.
+ * @type {integer}
+ */
+let contextId;
+
+/**
  * The parent id for the popover, used to identify the popover.
  * @type {string}
  */
@@ -133,7 +139,10 @@ const addListenerToIframe = (iframe) => {
     iframeDocument.addEventListener('mouseup', handleSelection);
 };
 
-export const init = () => {
+export const init = (context) => {
+    contextId = context;
+    window.console.log('Init tools for context:', contextId);
+
     // Add listener to  Shadow DOM.
     const shadowElements = document.querySelectorAll('*');
     shadowElements.forEach(el => {
