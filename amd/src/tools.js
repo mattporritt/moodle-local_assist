@@ -25,6 +25,7 @@ import * as Popover from 'local_assist/popover';
 import $ from 'jquery'; // Jquery is required for Bootstrap 4 poppers.
 import * as AssistModal from 'local_assist/modal';
 import Ajax from 'core/ajax';
+import * as coreStr from 'core/str';
 
 /**
  *  The context id for the current page.
@@ -97,6 +98,7 @@ const processRequest = async(linkId) => {
  */
 const displayModal = async(linkId) => {
     // Create and display the modal.
+    const title = await coreStr.getString(`title_${actionIds[linkId]}`, 'local_assist');
     await AssistModal.displayModal(() => {
         // Restore the saved text selection.
         restoreSelection();
@@ -104,7 +106,7 @@ const displayModal = async(linkId) => {
         // Show the popover again.
         Popover.showPopover(parentId);
         Popover.addPopoverListeners(handlePopoverClick);
-    }, 'fixme', true);
+    }, title, true);
 
     // Call the AI service.
     await processRequest(linkId);
