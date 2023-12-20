@@ -78,6 +78,12 @@ const processRequest = async(linkId) => {
     try {
         const responseObj = await Ajax.call([request])[0];
         window.console.log(responseObj);
+        // Update the modal content.
+        AssistModal.updateModalContent(responseObj.generatedcontent);
+
+        // Hide the loading spinner.
+        AssistModal.hideLoading();
+
     } catch (error) {
         window.console.log(error);
         // TODO: Display error message in modal.
@@ -98,7 +104,7 @@ const displayModal = async(linkId) => {
         // Show the popover again.
         Popover.showPopover(parentId);
         Popover.addPopoverListeners(handlePopoverClick);
-    }, true);
+    }, 'fixme', true);
 
     // Call the AI service.
     await processRequest(linkId);

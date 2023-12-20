@@ -94,7 +94,15 @@ class external extends external_api {
         // Execute API call.
         //$ai = new \local_assist\ai();
         //return $ai->ai_generate($prompttext, $contextid);
-        return [];
+        return [
+            'selectedtext' => $selectedtext,
+            'model' => 'gpt-4-0314',
+            'personality' => 'default',
+            'generateddate' => time(),
+            'generatedcontent' => 'Hello! How can I help you today?',
+            'errorcode' => 0,
+            'error' => '',
+        ];
     }
 
     /**

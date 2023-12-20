@@ -42,25 +42,28 @@ class AssistModal extends Modal {
     }
 }
 
+let root = null;
 
 /**
  * Display the modal when AI assistance is selected.
  *
  * @param {function} hiddenCallback The callback to pass to the hidden event.
+ * @param {string} title The title for the modal.
  * @param {boolean} showLoading Whether to show the loading spinner.
  */
-export const displayModal = async(hiddenCallback, showLoading) => {
+export const displayModal = async(hiddenCallback, title, showLoading) => {
     const modalObject = await AssistModal.create({
         large: true,
         templateContext: {classes: 'local-assist-modal-dimensions'}
     });
+    modalObject.setTitle(title);
     const modalroot = await modalObject.getRoot();
-    const root = modalroot[0];
+    root = modalroot[0];
     await modalObject.show();
 
     if (showLoading) {
         // Display the loading spinner.
-        displayLoading(root);
+        displayLoading();
     }
 
     modalroot.on(ModalEvents.hidden, () => {
@@ -103,9 +106,8 @@ export const isModalEvent = (event) => {
 /**
  * Display the loading action in the modal.
  *
- * @param {Object} root The root element of the modal.
  */
-const displayLoading = (root) => {
+export const displayLoading = () => {
     const loadingSpinnerDiv = root.querySelector('#local_assist_spinner');
     const overlayDiv = root.querySelector('#local_assist_overlay');
     const blurDiv = root.querySelector('#local_assist_blur');
@@ -120,9 +122,8 @@ const displayLoading = (root) => {
 /**
  * Hide the loading action in the modal.
  *
- * @param {Object} root The root element of the modal.
  */
-export const hideLoading = (root) => {
+export const hideLoading = () => {
     const loadingSpinnerDiv = root.querySelector('#local_assist_spinner');
     const overlayDiv = root.querySelector('#local_assist_overlay');
     const blurDiv = root.querySelector('#local_assist_blur');
@@ -131,4 +132,15 @@ export const hideLoading = (root) => {
     overlayDiv.classList.add('hidden');
     blurDiv.classList.remove('local-assist-blur');
 
+};
+
+/**
+ * Update the modal content.
+ * Can take any HTML content without javascript.
+ * @param {string} bodyContent The HTML content to display in the modal.
+ */
+export const updateModalContent = (bodyContent) => {
+    // Don't use the set body function on the modal as we don't want to replace the entire body markup.
+    const modalBody = root.querySelector('#local_assist_response_content');
+    modalBody.innerHTML = bodyContent;
 };

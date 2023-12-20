@@ -54,4 +54,5 @@
 
 .local-assist-modal-dimensions {
     min-height: 80vh;
+    min-width: 50vw;
 }
