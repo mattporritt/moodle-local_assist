@@ -44,20 +44,19 @@ if ($hassiteconfig) {
 
         // Array of personality options.
         $personalityoptions = array(
-            0 => new lang_string('personality_undergrad', 'local_assist'),
-            1 => new lang_string('personality_postgrad', 'local_assist'),
-            2 => new lang_string('personality_teachassist', 'local_assist'),
-            3 => new lang_string('personality_highschool', 'local_assist'),
-            4 => new lang_string('personality_primaryschool', 'local_assist'),
-            5 => new lang_string('personality_industry', 'local_assist'),
-            6 => new lang_string('personality_mentor', 'local_assist'),
+            0 => new lang_string('organisation_university', 'local_assist'),
+            1 => new lang_string('organisation_postgrad', 'local_assist'),
+            2 => new lang_string('organisation_highschool', 'local_assist'),
+            3 => new lang_string('organisation_primaryschool', 'local_assist'),
+            4 => new lang_string('organisation_industry', 'local_assist'),
         );
 
         // Setting to store personality.
-        $settings->add(new admin_setting_configselect('local_assist/personality',
-            new lang_string('personality', 'local_assist'),
-            new lang_string('personality_desc', 'local_assist'),
+        $settings->add(new admin_setting_configselect('local_assist/organisation',
+            new lang_string('organisation', 'local_assist'),
+            new lang_string('organisation_desc', 'local_assist'),
             0,
             $personalityoptions));
     }
+    $ADMIN->add('localplugins', $settings);
 }
