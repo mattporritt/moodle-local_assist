@@ -92,17 +92,8 @@ class external extends external_api {
         require_capability('local/assist:use', $context);
 
         // Execute API call.
-        //$ai = new \local_assist\ai();
-        //return $ai->ai_generate($prompttext, $contextid);
-        return [
-            'selectedtext' => $selectedtext,
-            'model' => 'gpt-4-0314',
-            'personality' => 'default',
-            'generateddate' => time(),
-            'generatedcontent' => 'Hello! How can I help you today?',
-            'errorcode' => 0,
-            'error' => '',
-        ];
+        $ai = new \local_assist\ai();
+        return $ai->generate_content($selectedtext, $action, $contextid);
     }
 
     /**

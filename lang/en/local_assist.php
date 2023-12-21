@@ -58,6 +58,6 @@ $string['selector_questions'] = 'Answer Questions: Respond to specific queries a
 $string['selector_summarise'] = 'Summarize: Condense long texts into key points.';
 $string['selector_translate'] = 'Translate: Offer translations for non-native language texts.';
 $string['title_explain'] = 'AI Assist - Explaining Content';
-$string['title_question'] = 'AI Assist - Ask Questions About Content';
+$string['title_questionanswer'] = 'AI Assist - Ask Questions About Content';
 $string['title_summarise'] = 'AI Assist - Summarising Content';
 $string['title_translate'] = 'AI Assist - Translating Content';

@@ -50,10 +50,10 @@ let textRange = null;
  * @type {object}
  */
 const actionIds = {
+    "local-assist-popover-explain": 'explain',
     "local-assist-popover-summarise": 'summarise',
     "local-assist-popover-translate": 'translate',
-    "local-assist-popover-explain": 'explain',
-    "local-assist-popover-question": 'question',
+    "local-assist-popover-question": 'questionanswer',
 };
 
 /**

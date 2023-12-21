@@ -33,22 +33,54 @@ use core\http_client;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class ai {
-    // API key.
+    /**
+     * The AI API key.
+     *
+     * @var string
+     */
     private string $apikey;
 
-    // API org id.
+    /**
+     * The AI organisation id.
+     *
+     * @var string
+     */
     private string $orgid;
 
-    // API endpoint.
+    /**
+     * The AI API endpoint.
+     *
+     * @var string
+     */
     private string $aiendpoint = 'https://api.openai.com/v1/chat/completions';
 
-    // HTTP Client.
+    /**
+     * The http client.
+     *
+     * @var http_client
+     */
     private http_client $client;
 
-    // AI model.
+    /**
+     * The AI model.
+     *
+     * @var string
+     */
     private string $model = 'gpt-4';
 
-    // AI "personality" options.
+    /**
+     * The AI temperature. Between 0 and 2.
+     *
+     * @var float
+     */
+    private float $temperature = 0.3;
+
+
+    /**
+     * Array to define supported AI personalities.
+     *
+     * @var array
+     */
     private array $personalityoptions = [
         0 => 'You are a lecturer at a higher education university',
         1 => 'You are a postgraduate lecturer at a university',
@@ -57,13 +89,18 @@ class ai {
         5 => 'You are a topic matter expert in an organisation or business',
     ];
 
-    // AI personality.
+    /**
+     * The AI personality.
+     *
+     * @var string
+     */
     private string $personality;
 
-    // AI temperature. Between 0 and 2.
-    private float $temperature = 0.3;
-
-    // Array to define supported AI operations.
+    /**
+     * Array to define supported AI operations.
+     *
+     * @var array
+     */
     private static array $supportedoperations = [
         'summarise' => true,
         'explain' => true,
@@ -73,6 +110,11 @@ class ai {
         'images' => false,
     ];
 
+    /**
+     * Array to define supported AI actions.
+     *
+     * @var array
+     */
     private array $aiactions = [
         'explain' => 'Explain the provided text. Clarify complex concepts or terms.',
         'summarise' => 'Summarise the provided text. Condense long text into key points.',
@@ -114,12 +156,12 @@ class ai {
      * Generate content from the AI service.
      *
      * @param string $prompttext The prompt text.
+     * @param string $action The action for the AI to perform on the supplied text.
      * @param int $contextid The context id.
      * @return array The generated content.
      */
-    public function generate_content(string $prompttext, int $contextid): array {
+    public function generate_content(string $prompttext, string $action, int $contextid): array {
         global $USER;
-
 
         // Check rate limiting for user before continuing.
         // If rate limit is exceeded, return an error response.
@@ -131,10 +173,10 @@ class ai {
         }
 
         // Update temperature.
-        $this->update_temperature($prompttext, $contextid, $USER->id);
+        $this->update_temperature($prompttext, $action, $contextid, $USER->id);
 
         // Get request object.
-        $requestobj = $this->generate_request_object($prompttext);
+        $requestobj = $this->generate_request_object($prompttext, $action);
 
         // Get response from AI service.
         $responsearr = $this->query_ai_api($requestobj);
@@ -149,12 +191,18 @@ class ai {
      * Generate request object ready to send to the AI service.
      *
      * @param string $prompttext The prompt text.
+     * @param string $action The action for the AI to perform on the supplied text.
+     * @return \stdClass The request object.
      */
-    private function generate_request_object(string $prompttext): \stdClass {
+    private function generate_request_object(string $prompttext, string $action): \stdClass {
         // Create the AI request object.
-        $systemobj = new \stdClass();
-        $systemobj->role = 'system';
-        $systemobj->content = $this->personality;
+        $personalityobj = new \stdClass();
+        $personalityobj->role = 'system';
+        $personalityobj->content = $this->personality;
+
+        $actionobj = new \stdClass();
+        $actionobj->role = 'system';
+        $actionobj->content = $this->aiactions[$action];
 
         $userobj = new \stdClass();
         $userobj->role = 'user';
@@ -163,7 +211,7 @@ class ai {
         $requestobj = new \stdClass();
         $requestobj->model = $this->model;
         $requestobj->temperature = $this->temperature;
-        $requestobj->messages = [$systemobj, $userobj];
+        $requestobj->messages = [$personalityobj, $actionobj, $userobj];
 
         return $requestobj;
     }
@@ -172,14 +220,15 @@ class ai {
      * Get the current temperature for the AI service.
      *
      * @param string $prompttext The prompt text.
+     * @param string $action The action for the AI to perform on the supplied text.
      * @param int $contextid The context id.
      * @param int $userid The user id.
      * @return void
      */
-    private function update_temperature(string $prompttext, int $contextid, int $userid): void {
+    private function update_temperature(string $prompttext, string $action, int $contextid, int $userid): void {
         // Set up the cache API for the Tiny AI Plugin.
         $cache = \cache::make('local_assist', 'request_temperature');
-        $cachekeystr = $prompttext . (string)$contextid . (string)$userid;
+        $cachekeystr = $prompttext . $action . (string)$contextid . (string)$userid;
         $cachekey = hash_pbkdf2('sha3-256', $cachekeystr, 'local_assist', 1);
 
         // Check cache for existing response.
