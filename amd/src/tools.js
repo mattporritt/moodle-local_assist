@@ -65,7 +65,6 @@ const actionIds = {
  */
 const processRequest = async(linkId) => {
     // Pass the prompt text to the webservice using Ajax.
-    window.console.log(textRange.toString());
     const request = {
         methodname: 'local_assist_ai_generate',
         args: {
@@ -79,8 +78,11 @@ const processRequest = async(linkId) => {
     try {
         const responseObj = await Ajax.call([request])[0];
         window.console.log(responseObj);
+
+        // Replace line breaks with <br> and with </p><p> for paragraphs.
+        const modalContent = replaceLineBreaks(responseObj.generatedcontent);
         // Update the modal content.
-        AssistModal.updateModalContent(responseObj.generatedcontent);
+        AssistModal.updateModalContent(modalContent);
 
         // Hide the loading spinner.
         AssistModal.hideLoading();
@@ -138,7 +140,6 @@ const handlePopoverClick = (event, linkId) => {
     event.preventDefault();
     event.stopImmediatePropagation(); // Prevents the event from propagating up to the document level.
 
-    window.console.log('Link clicked:', linkId);
     // Hide the popover.
     Popover.hidePopover(parentId);
 
@@ -175,6 +176,23 @@ const handleSelection = async(event) => {
 };
 
 /**
+ * Replace double line breaks with <br> and with </p><p> for paragraphs.
+ *
+ * @param {String} text The text to replace.
+ * @returns {String}
+ */
+const replaceLineBreaks = (text) => {
+    // Replace double line breaks with </p><p> for paragraphs
+    const textWithParagraphs = text.replace(/\n{2,}|\r\n/g, '<br/><br/>');
+
+    // Replace remaining single line breaks with <br> tags
+    const textWithBreaks = textWithParagraphs.replace(/\n/g, '<br/>');
+
+    // Add opening and closing <p> tags to wrap the entire content
+    return `<p>${textWithBreaks}</p>`;
+};
+
+/**
  * Add listener to Shadow DOM.
  *
  * @param {HTMLElement} root The root element of the Shadow DOM.
@@ -195,7 +213,6 @@ const addListenerToIframe = (iframe) => {
 
 export const init = (context) => {
     contextId = context;
-    window.console.log('Init tools for context:', contextId);
 
     // Add listener to  Shadow DOM.
     const shadowElements = document.querySelectorAll('*');

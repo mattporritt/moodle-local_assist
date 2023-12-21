@@ -84,9 +84,9 @@ class ai {
     private array $personalityoptions = [
         0 => 'You are a lecturer at a higher education university',
         1 => 'You are a postgraduate lecturer at a university',
-        3 => 'You are a high school teacher',
-        4 => 'You are a primary school teacher',
-        5 => 'You are a topic matter expert in an organisation or business',
+        2 => 'You are a high school teacher',
+        3 => 'You are a primary school teacher',
+        4 => 'You are a topic matter expert in an organisation or business',
     ];
 
     /**
@@ -116,8 +116,8 @@ class ai {
      * @var array
      */
     private array $aiactions = [
-        'explain' => 'Explain the provided text. Clarify complex concepts or terms.',
-        'summarise' => 'Summarise the provided text. Condense long text into key points.',
+        'explain' => 'Explain the provided text. Clarify complex concepts or terms. Your aim is to make it easy for learners to understand.',
+        'summarise' => 'Summarise the provided text. Condense long text into key points. Simplify anything too complex for learners to understand.',
         'translate' => 'Translate the provided text into another language.',
         'questionanswer' => 'Answer questions about the provided text.',
     ];
