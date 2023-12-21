@@ -131,7 +131,7 @@ class ai {
         // Get api org id from config.
         $this->orgid = get_config('local_assist', 'orgid');
         // Get personality from config.
-        $this->personality = $this->personalityoptions[get_config('local_assist', 'personality')];
+        $this->personality = $this->personalityoptions[get_config('local_assist', 'organisation')];
         // Create http client.
         $this->client = new http_client([
             'base_uri' => $this->aiendpoint,
